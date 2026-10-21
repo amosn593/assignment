@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/amosn593/assignment/docs"
 	"github.com/amosn593/assignment/internal/router"
+	"github.com/gin-gonic/gin"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -17,6 +18,10 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
+
+	// Switch Gin to Release mode to suppress debug warnings
+	gin.SetMode(gin.ReleaseMode)
+
 	db, err := sql.Open("sqlite3", "./db.sqlite")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)

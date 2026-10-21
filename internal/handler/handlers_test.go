@@ -53,18 +53,18 @@ func setupTestDB(t *testing.T) *sql.DB {
 		updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 	INSERT INTO doctors (id, full_name, specialty) VALUES (1, 'Dr. Test', 'General');
-	-- Add working hours for today's weekday
 	`
 	_, err = db.Exec(schema)
 	if err != nil {
 		t.Fatalf("Failed to create schema: %v", err)
 	}
 
-	// Insert working hours for the current weekday so test passes
-	todayWeekday := int(time.Now().Weekday())
-	_, err = db.Exec(`INSERT INTO doctor_working_hours (doctor_id, weekday, start_time, end_time) VALUES (1, ?, '00:00', '23:59')`, todayWeekday)
-	if err != nil {
-		t.Fatalf("Failed to insert working hours: %v", err)
+	// Insert working hours for ALL days of the week (0 to 6) to prevent weekday mismatches
+	for w := 0; w <= 6; w++ {
+		_, err = db.Exec(`INSERT INTO doctor_working_hours (doctor_id, weekday, start_time, end_time) VALUES (1, ?, '00:00', '23:59')`, w)
+		if err != nil {
+			t.Fatalf("Failed to insert working hours: %v", err)
+		}
 	}
 
 	_, err = db.Exec(`INSERT INTO patients (id, full_name, email) VALUES (1, 'Test Patient', 'test@example.com')`)

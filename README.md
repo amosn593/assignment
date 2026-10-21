@@ -93,6 +93,23 @@ Each appointment belongs to one doctor.
 ##### HTTP/API Layer/Router
 
 Responsible for receiving HTTP requests, parsing JSON, validating request formats, invoking application services, and returning JSON responses.
+`
+Seed Initial Data
+INSERT INTO doctors (id, full_name, specialty) VALUES
+(1, 'Dr. Alice Smith', 'General Practitioner'),
+(2, 'Dr. Bob Jones', 'Pediatrics');
+
+-- Working hours for Dr. Alice Smith (Mon-Fri 09:00 to 17:00)
+INSERT INTO doctor_working_hours (doctor_id, weekday, start_time, end_time) VALUES
+(1, 1, '09:00', '17:00'),
+(1, 2, '09:00', '17:00'),
+(1, 3, '09:00', '17:00'),
+(1, 4, '09:00', '17:00'),
+(1, 5, '09:00', '17:00');
+
+INSERT INTO patients (id, full_name, email) VALUES
+(1, 'John Doe', 'john@example.com')
+`
 
 ##### Booking Service/Handler
 
