@@ -1,0 +1,133 @@
+# Project assignment
+
+# Section One - System Design
+
+I have used Go BluePrint to generate initial project boilerplate code.
+
+#### Models
+
+Doctor
+
+Represents a doctor who can receive appointments.
+
+Fields:
+
+id: Unique doctor identifier.
+
+full_name: Doctor's full name.
+
+specialty: Medical specialty.
+
+created_at: Record creation timestamp.
+
+Relationships:
+
+A doctor can have multiple working-hour records.
+
+A doctor can have multiple appointments.
+
+DoctorWorkingHours
+
+Defines when a doctor is available for appointments.
+
+Fields:
+
+id: Unique working-hours record identifier.
+
+doctor_id: Reference to the doctor.
+
+weekday: Day of the week.
+
+start_time: Start of the working period.
+
+end_time: End of the working period.
+
+Patient
+
+Represents a patient who books appointments.
+
+Fields:
+
+id: Unique patient identifier.
+
+full_name: Patient's full name.
+
+email: Patient's email address, unique.
+
+created_at: Record creation timestamp.
+
+Appointment
+
+Represents a booking between a patient and a doctor.
+
+Fields:
+
+id: Unique appointment identifier.
+
+patient_id: Reference to the patient.
+
+doctor_id: Reference to the doctor.
+
+starts_at: Appointment start timestamp.
+
+ends_at: Appointment end timestamp.
+
+status: Appointment status, either booked or cancelled.
+
+cancellation_reason: Reason for cancellation, when applicable.
+
+created_at: Record creation timestamp.
+
+updated_at: Last modification timestamp.
+
+Relationships:
+
+Each appointment belongs to one patient.
+
+Each appointment belongs to one doctor.
+
+#### Components
+
+##### HTTP/API Layer/Router
+
+Responsible for receiving HTTP requests, parsing JSON, validating request formats, invoking application services, and returning JSON responses.
+
+##### Booking Service/Handler
+
+Contains the core business rules for appointment management.
+
+Responsibilities:
+
+Validate doctor and patient identifiers.
+
+Validate appointment timestamps.
+
+Ensure appointments follow 30-minute slot boundaries.
+
+Check doctor working hours.
+
+Enforce the one-hour advance-booking rule.
+
+Generate available appointment slots.
+
+Coordinate booking, cancellation, and rescheduling operations.
+
+Translate business validation failures into meaningful errors.
+
+##### Data Access/Database
+
+SQL queries are maintained separately from business logic. sqlc is intended to generate type-safe database access code from these queries, while golang-migrate manages schema changes.
+
+Database constraints provide a final safeguard against invalid relationships and duplicate active bookings.
+
+#### Key Decisions and trade-offs
+
+1. SQLite Database instead of a client-server database
+   SQLite keeps the initial application easy to install and run without managing a separate database server.
+
+The trade-off is that SQLite is less suitable for high write concurrency and multi-instance deployments than a server database. If the clinic grows significantly, PostgreSQL would be a reasonable migration target.
+
+2. No authentication  
+   Authentication is intentionally omitted as requested. The API accepts identifiers supplied by the caller.
+
+This simplifies the assessment implementation but means the service must not be treated as a secure production patient-data system. A production version should introduce authentication, authorization, and patient-level access controls.
