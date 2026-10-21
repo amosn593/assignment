@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["development"]
   push:
-    branches: [ "main" ]
+    branches: ["development"]
 
 jobs:
   test:
@@ -16,10 +16,13 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.26.x"
 
       - name: Install dependencies
         run: go mod tidy
 
-      - name: Run tests
-        run: go test -v -cover ./...
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test with the Go CLI
+        run: go test ./...

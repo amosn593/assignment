@@ -4,6 +4,8 @@
 
 I have used Go BluePrint to generate initial project boilerplate code.
 
+I have also use cursor as my coding assistant.
+
 #### Models
 
 Doctor
@@ -131,3 +133,20 @@ The trade-off is that SQLite is less suitable for high write concurrency and mul
    Authentication is intentionally omitted as requested. The API accepts identifiers supplied by the caller.
 
 This simplifies the assessment implementation but means the service must not be treated as a secure production patient-data system. A production version should introduce authentication, authorization, and patient-level access controls.
+
+# Section Two - API IMPLEMENTATION
+
+Created all the required apis using Go gin framework
+
+# Section Three - DEPLOYMENT & CI/CD
+
+- Public URL
+- Deployments are on main branch on push and merge pull request.
+- Deployment process: on push and pull request, pipeline builds a production app binary, Logins in to azure using store app secrets, then deploys the app to azure app service.
+
+# Section Four - AI Reflection
+
+- I used AI to generate most of the code, by providing detailed and task specific prompts.
+- Prompt: "Write a Go function using time.Parse that generates 30-minute intervals between a doctor's start and end times while excluding booked slots and past hours.", The AI correctly handled timezone parsing constraints and gave a robust iteration loop over dayStart to dayEnd with 30-minute increments.
+- The initial AI output for date comparison in SQL used improper SQLite date string formats (DATETIME comparison without correct formatting). I corrected by checking with SQLite string formatting rules and standardizing timestamps to "2006-01-02 15:04:05"
+- Database choice(sqlite) and no authentication decision was made without use of AI
