@@ -1,4 +1,4 @@
-# Project assignment
+# Clinic Booking App
 
 # Section One - System Design
 
@@ -6,7 +6,7 @@ I have used Go BluePrint to generate initial project boilerplate code.
 
 I have also use cursor as my coding assistant.
 
-The api is deployed in azure cloud.
+The api is deployed on render cloud.
 
 #### Models
 
@@ -148,10 +148,17 @@ Database constraints provide a final safeguard against invalid relationships and
 
 The trade-off is that SQLite is less suitable for high write concurrency and multi-instance deployments than a server database. If the clinic grows significantly, PostgreSQL would be a reasonable migration target.
 
-2. No authentication  
-   Authentication is intentionally omitted as requested. The API accepts identifiers supplied by the caller.
+2. No authentication  and authorization
+   Authentication and authorization is intentionally omitted. The API accepts identifiers supplied by the caller.
 
 This simplifies the assessment implementation but means the service must not be treated as a secure production patient-data system. A production version should introduce authentication, authorization, and patient-level access controls.
+
+#### Future considerations as app grows
+- Adding pagination
+- Add Caching
+- Add rate limiting
+- Introduce loading balance to scale the app horizantally
+- Splitting database writes and reads
 
 # Section Two - API IMPLEMENTATION
 
@@ -159,11 +166,11 @@ Created all the required apis using Go gin framework
 
 # Section Three - DEPLOYMENT & CI/CD
 
-- Public URL
+- Public URL: https://assignment-zagn.onrender.com/swagger/index.html
 - Main branch, triggers deployment on push or merging a pull request.
 - Deployments are on main branch on push and pull request.
 - CI process: Installs dependencies, builds the app, then run tests.
-- Deployment process: on push and pull request and after successful ci actions runs, pipeline builds a production app binary, Logins in to azure using store app secrets, then deploys the app to azure app service.
+- Deployment process: After successful ci actions runs, render watches for changes on main branch, builds then deploys the app.
 
 # Section Four - AI Reflection
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/amosn593/assignment/docs"
 	"github.com/amosn593/assignment/internal/router"
@@ -30,8 +31,13 @@ func main() {
 
 	r := router.SetupRouter(db)
 
-	log.Println("Server is running on port 8080...")
-	if err := http.ListenAndServe(":8080", r); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // fallback for local development
+	}
+
+	log.Println("Server is running on port " + port + "...")
+	if err := http.ListenAndServe(":" + port, r); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
