@@ -163,7 +163,7 @@ Created all the required apis using Go gin framework
 - Main branch, triggers deployment on push or merging a pull request.
 - Deployments are on main branch on push and pull request.
 - CI process: Installs dependencies, builds the app, then run tests.
-- Deployment process: on push and pull request, pipeline builds a production app binary, Logins in to azure using store app secrets, then deploys the app to azure app service.
+- Deployment process: on push and pull request and after successful ci actions runs, pipeline builds a production app binary, Logins in to azure using store app secrets, then deploys the app to azure app service.
 
 # Section Four - AI Reflection
 
