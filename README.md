@@ -6,6 +6,8 @@ I have used Go BluePrint to generate initial project boilerplate code.
 
 I have also use cursor as my coding assistant.
 
+The api is deployed in azure cloud.
+
 #### Models
 
 Doctor
@@ -158,7 +160,9 @@ Created all the required apis using Go gin framework
 # Section Three - DEPLOYMENT & CI/CD
 
 - Public URL
-- Deployments are on main branch on push and merge pull request.
+- Main branch, triggers deployment on push or merging a pull request.
+- Deployments are on main branch on push and pull request.
+- CI process: Installs dependencies, builds the app, then run tests.
 - Deployment process: on push and pull request, pipeline builds a production app binary, Logins in to azure using store app secrets, then deploys the app to azure app service.
 
 # Section Four - AI Reflection
