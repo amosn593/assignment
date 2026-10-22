@@ -6,7 +6,7 @@ I have used Go BluePrint to generate initial project boilerplate code.
 
 I have also use cursor as my coding assistant.
 
-The api is deployed in azure cloud.
+The api is deployed in render cloud.
 
 #### Models
 
