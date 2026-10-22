@@ -1,58 +1,37 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"database/sql"
 	"log"
 	"net/http"
-	"os/signal"
-	"syscall"
-	"time"
 
-	"github.com/amosn593/assignment/internal/server"
+	_ "github.com/amosn593/assignment/docs"
+	"github.com/amosn593/assignment/internal/router"
+	"github.com/gin-gonic/gin"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func gracefulShutdown(apiServer *http.Server, done chan bool) {
-	// Create context that listens for the interrupt signal from the OS.
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
-
-	// Listen for the interrupt signal.
-	<-ctx.Done()
-
-	log.Println("shutting down gracefully, press Ctrl+C again to force")
-	stop() // Allow Ctrl+C to force shutdown
-
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := apiServer.Shutdown(ctx); err != nil {
-		log.Printf("Server forced to shutdown with error: %v", err)
-	}
-
-	log.Println("Server exiting")
-
-	// Notify the main goroutine that the shutdown is complete
-	done <- true
-}
-
+// @title Clinic Booking System API
+// @version 1.0
+// @description REST API for clinic doctor appointments booking using Gin.
+// @host localhost:8080
+// @BasePath /
 func main() {
 
-	server := server.NewServer()
+	// Switch Gin to Release mode to suppress debug warnings
+	gin.SetMode(gin.ReleaseMode)
 
-	// Create a done channel to signal when the shutdown is complete
-	done := make(chan bool, 1)
-
-	// Run graceful shutdown in a separate goroutine
-	go gracefulShutdown(server, done)
-
-	err := server.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		panic(fmt.Sprintf("http server error: %s", err))
+	db, err := sql.Open("sqlite3", "./db.sqlite")
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
+	defer db.Close()
 
-	// Wait for the graceful shutdown to complete
-	<-done
-	log.Println("Graceful shutdown complete.")
+	r := router.SetupRouter(db)
+
+	log.Println("Server is running on port 8080...")
+	if err := http.ListenAndServe(":8080", r); err != nil {
+		log.Fatalf("Server failed: %v", err)
+	}
 }

@@ -1,0 +1,177 @@
+basePath: /
+definitions:
+  database.Appointment:
+    properties:
+      cancellationReason:
+        type: sql.NullString
+      createdAt:
+        type: sql.NullString
+      doctorID:
+        type: integer
+      endsAt:
+        type: string
+      id:
+        type: integer
+      patientID:
+        type: integer
+      startsAt:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: sql.NullString
+    type: object
+  handler.BookAppointmentRequest:
+    properties:
+      doctor_id:
+        type: integer
+      patient_id:
+        type: integer
+      starts_at:
+        type: string
+    required:
+    - doctor_id
+    - patient_id
+    - starts_at
+    type: object
+  handler.CancelRequest:
+    properties:
+      reason:
+        type: string
+    required:
+    - reason
+    type: object
+  handler.RescheduleRequest:
+    properties:
+      new_starts_at:
+        type: string
+    required:
+    - new_starts_at
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API for clinic doctor appointments booking using Gin.
+  title: Clinic Booking System API
+  version: "1.0"
+paths:
+  /appointments:
+    post:
+      consumes:
+      - application/json
+      description: Book a 30-minute slot with a doctor based on configured working hours
+      parameters:
+      - description: Booking Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.BookAppointmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.Appointment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Book an appointment
+  /appointments/{id}/cancel:
+    patch:
+      consumes:
+      - application/json
+      description: Cancel an existing appointment with a reason, keeping the record for history
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Cancellation Reason
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CancelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Appointment'
+      summary: Cancel an appointment
+  /appointments/{id}/reschedule:
+    patch:
+      consumes:
+      - application/json
+      description: Move an appointment to a new slot
+      parameters:
+      - description: Appointment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New Slot Details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RescheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Appointment'
+      summary: Reschedule an appointment
+  /doctors/{id}/availability:
+    get:
+      description: Return all available 30-minute slots for a doctor on a given date (YYYY-MM-DD)
+      parameters:
+      - description: Doctor ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Date in YYYY-MM-DD format
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get doctor availability
+  /patients/{id}/appointments:
+    get:
+      description: Return upcoming appointments for a patient sorted by date
+      parameters:
+      - description: Patient ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Appointment'
+            type: array
+      summary: Get patient upcoming appointments
+swagger: "2.0"
