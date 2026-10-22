@@ -163,7 +163,7 @@ Created all the required apis using Go gin framework
 - Main branch, triggers deployment on push or merging a pull request.
 - Deployments are on main branch on push and pull request.
 - CI process: Installs dependencies, builds the app, then run tests.
-- Deployment process: on push and pull request and after successful ci actions runs, render watches for changes on main branch, builds then deploys the app.
+- Deployment process: After successful ci actions runs, render watches for changes on main branch, builds then deploys the app.
 
 # Section Four - AI Reflection
 
